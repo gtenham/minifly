@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>MiniFly</artifactId>
+    <groupId>com.googlecode.minifly</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>com.googlecode.minifly</groupId>
+  <artifactId>MiniFly-CoreModule</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>MiniFly-CoreModule</name>
+  <description>Contains core components for MiniFly: Interfaces, filters etc.</description>
+  <dependencies>
+  	<dependency>
+  		<groupId>javax.servlet</groupId>
+  		<artifactId>javax.servlet-api</artifactId>
+  		<version>3.0.1</version>
+  		<type>jar</type>
+  		<scope>provided</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.yahoo.platform.yui</groupId>
+  		<artifactId>yuicompressor</artifactId>
+  		<version>2.3.6</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-simple</artifactId>
+		<version>1.5.8</version>
+	</dependency>
+	<!-- 
+		When using the commons-logging framework
+		a bridge between the slf4j and commons-logging is needed.
+	-->
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>jcl-over-slf4j</artifactId>
+		<version>1.5.8</version>
+	</dependency>
+  </dependencies>
+</project>

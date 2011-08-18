@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="MiniFly" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<display-name>MiniFly web application</display-name>
+  	<servlet>
+    	<servlet-name>minifly</servlet-name>
+    	<servlet-class>com.googlecode.minifly.web.MiniflyServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+    	<servlet-name>minifly</servlet-name>
+    	<url-pattern>/</url-pattern>
+  	</servlet-mapping>
+  	
+  	<context-param>
+    	<param-name>x-minifly-doc-root</param-name>
+    	<param-value>D:/apache-data/www/java</param-value>
+  	</context-param>
+  	
+  	<filter>
+        <filter-name>yuiMinFilter</filter-name>
+        <filter-class>com.googlecode.minifly.web.filters.YUICompressorFilter</filter-class>
+        <!-- All the init params are optional and are equivalent to YUICompressor command line options --> 
+        <init-param> 
+        	<param-name>line-break</param-name>
+        	<param-value>8000</param-value>
+        </init-param>
+ 	</filter>
+ 	<filter-mapping>
+   		<filter-name>yuiMinFilter</filter-name>
+   		<url-pattern>*.js</url-pattern>
+   		<url-pattern>*.css</url-pattern>
+ 	</filter-mapping>
+</web-app>
