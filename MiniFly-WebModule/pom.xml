@@ -10,7 +10,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>MiniFly-WebModule</name>
-  <description>Module containing minifly servlet</description>
+  <description>Web module containing minifly servlet</description>
   <build>
 		<plugins>
 			<plugin>
