@@ -5,13 +5,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>MiniFly</name>
-	<description>On the fly minifier</description>
+	<description>Parent pom for On the fly minifier</description>
 	<modules>
 		<module>MiniFly-WebModule</module>
 		<module>MiniFly-CoreModule</module>
 	</modules>
   
-  	<properties>
-		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
-	</properties>
 </project>
