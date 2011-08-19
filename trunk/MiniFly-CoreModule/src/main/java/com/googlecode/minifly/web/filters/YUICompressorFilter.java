@@ -18,8 +18,6 @@ package com.googlecode.minifly.web.filters;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -30,48 +28,50 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.googlecode.minifly.compress.YUIOptions;
+import com.googlecode.minifly.services.IResourceService;
+import com.googlecode.minifly.services.impl.ResourceService;
 import com.googlecode.minifly.web.filters.wrappers.CompressorResponseWrapper;
-import com.yahoo.platform.yui.compressor.CssCompressor;
-import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class YUICompressorFilter implements Filter {
+	
 	private static final Logger log = LoggerFactory.getLogger(YUICompressorFilter.class);
 	
 	// YUI parameters
-	private int lineBreakPos = -1;   //Insert a line break after the specified column number
-    private boolean warn = false; //Display possible errors in the code
-    private boolean munge = true; //Minify only, do not obfuscate
-    private boolean preserveAllSemiColons = false; //Preserve unnecessary semicolons
-    private boolean disableOptimizations = true; // Additional optimizations
-    
-    public void init(FilterConfig filterConfig) throws ServletException {
+	private YUIOptions options;
+	
+	IResourceService rs;
+	
+	public void init(FilterConfig filterConfig) throws ServletException {
 		
+    	options = new YUIOptions();
+    	rs = new ResourceService();
+    	
         String lineBreak = filterConfig.getInitParameter("line-break");
         if (lineBreak != null) {
-        	lineBreakPos = Integer.parseInt(lineBreak);
+        	options.setLineBreakPos(Integer.parseInt(lineBreak));
         }
 
         String warnString = filterConfig.getInitParameter("warn");
         if (warnString != null) {
-        	warn = Boolean.parseBoolean(warnString);
+        	options.setWarn(Boolean.parseBoolean(warnString));
         }
 
         String noMungeString = filterConfig.getInitParameter("nomunge");
         if (noMungeString != null) {
-        	munge = Boolean.parseBoolean(noMungeString) ? false : true; //swap values because it's nomunge
+        	options.setMunge(Boolean.parseBoolean(noMungeString) ? false : true);
         }
 
         String preserveAllSemiColonsString = filterConfig.getInitParameter("preserve-semi");
         if (preserveAllSemiColonsString != null) {
-        	preserveAllSemiColons = Boolean.parseBoolean(preserveAllSemiColonsString);
+        	options.setPreserveAllSemiColons(Boolean.parseBoolean(preserveAllSemiColonsString));
         }
         
         String disableOptimizationsString = filterConfig.getInitParameter("preserve-semi");
         if (disableOptimizationsString != null) {
-        	disableOptimizations = Boolean.parseBoolean(disableOptimizationsString);
+        	options.setDisableOptimizations(Boolean.parseBoolean(disableOptimizationsString));
         }
 	}
     
@@ -100,9 +100,9 @@ public class YUICompressorFilter implements Filter {
 	private void writeFileToServletOutputStream(String requestURI, InputStream inputStream, ServletOutputStream servletOutputStream) throws IOException {
 		String s;
 	    if (requestURI.endsWith(".js")) {
-            s = getCompressedJavaScript(inputStream);
+            s = rs.getCompressedJavaScript(inputStream, options);
         } else if (requestURI.endsWith(".css")) {
-            s = getCompressedCss(inputStream);
+            s = rs.getCompressedCss(inputStream, options);
         } else {
             s = "This file format is not supported by this filter. Only .css and .js are supported";
         }
@@ -120,43 +120,5 @@ public class YUICompressorFilter implements Filter {
         } catch (IOException e) {
             log.error("error writing String to servletOutputStream: " + e.getMessage());
         }
-    }
-    
-	/**
-     * Note that the inputStream is closed!
-     *
-     * @param inputStream
-     * @throws IOException
-     */
-    private String getCompressedJavaScript(InputStream inputStream) throws IOException {
-        InputStreamReader isr = new InputStreamReader(inputStream);
-        JavaScriptCompressor compressor = new JavaScriptCompressor(isr, new YUICompressorErrorReporter());
-        inputStream.close();
-
-        StringWriter out = new StringWriter();
-        compressor.compress(out, lineBreakPos, munge, warn, preserveAllSemiColons, disableOptimizations);
-        out.flush();
-
-        StringBuffer buffer = out.getBuffer();
-        return buffer.toString();
-    }
-
-    /**
-     * Note that the inputStream is closed!
-     *
-     * @param inputStream
-     * @throws IOException
-     */
-    private String getCompressedCss(InputStream inputStream) throws IOException {
-        InputStreamReader isr = new InputStreamReader(inputStream);
-        CssCompressor compressor = new CssCompressor(isr);
-        inputStream.close();
-
-        StringWriter out = new StringWriter();
-        compressor.compress(out, lineBreakPos);
-        out.flush();
-
-        StringBuffer buffer = out.getBuffer();
-        return buffer.toString();
     }
 }
