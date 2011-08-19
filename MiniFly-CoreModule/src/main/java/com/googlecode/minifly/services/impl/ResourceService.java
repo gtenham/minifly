@@ -19,11 +19,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
+import com.googlecode.minifly.compress.YUIOptions;
 import com.googlecode.minifly.services.IResourceService;
+import com.googlecode.minifly.web.filters.YUICompressorErrorReporter;
+import com.yahoo.platform.yui.compressor.CssCompressor;
+import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 
 /**
  * Resource service implementation
@@ -60,6 +66,34 @@ public class ResourceService implements IResourceService {
 		while ((bytes = resourceInputStream.read()) != -1) {
 			os.write(bytes);
 		}
+	}
+
+	public String getCompressedJavaScript(InputStream inputStream,
+			YUIOptions options) throws IOException {
+		InputStreamReader isr = new InputStreamReader(inputStream);
+        JavaScriptCompressor compressor = new JavaScriptCompressor(isr, new YUICompressorErrorReporter());
+        inputStream.close();
+
+        StringWriter out = new StringWriter();
+        compressor.compress(out, options.getLineBreakPos(), options.isMunge(), options.isWarn(), options.isPreserveAllSemiColons(), options.isDisableOptimizations());
+        out.flush();
+
+        StringBuffer buffer = out.getBuffer();
+        return buffer.toString();
+	}
+
+	public String getCompressedCss(InputStream inputStream, YUIOptions options)
+			throws IOException {
+		InputStreamReader isr = new InputStreamReader(inputStream);
+        CssCompressor compressor = new CssCompressor(isr);
+        inputStream.close();
+
+        StringWriter out = new StringWriter();
+        compressor.compress(out, options.getLineBreakPos());
+        out.flush();
+
+        StringBuffer buffer = out.getBuffer();
+        return buffer.toString();
 	}
 
 }

@@ -16,9 +16,12 @@
 package com.googlecode.minifly.services;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+
+import com.googlecode.minifly.compress.YUIOptions;
 
 /**
  * Resource service interface
@@ -38,4 +41,24 @@ public interface IResourceService {
 	 * @throws IOException
 	 */
 	void writeResourceToStream(String docroot, HttpServletRequest request, ServletOutputStream os ) throws IOException;
+	
+	/**
+	 * Compress javascript content using YUICompressor.
+	 * 
+	 * @param  InputStream inputStream
+	 * @param  YUIOptions options
+	 * @return String Compressed javascript content
+	 * @throws IOException
+	 */
+	String getCompressedJavaScript(InputStream inputStream, YUIOptions options) throws IOException;
+	
+	/**
+	 * Compress css content using YUICompressor.
+	 * 
+	 * @param  InputStream inputStream
+	 * @param  YUIOptions options
+	 * @return String Compressed css content
+	 * @throws IOException
+	 */
+	String getCompressedCss(InputStream inputStream, YUIOptions options) throws IOException;
 }

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.googlecode.minifly.services.IResourceService;
 import com.googlecode.minifly.services.impl.ResourceService;
 
 /**
@@ -76,7 +77,7 @@ public class MiniflyServlet extends HttpServlet {
 			documentRoot = docRootHeader;
 		}
 		
-		ResourceService rs = new ResourceService();
+		IResourceService rs = new ResourceService();
 		
 		try {
 			rs.writeResourceToStream(documentRoot, request, response.getOutputStream());
