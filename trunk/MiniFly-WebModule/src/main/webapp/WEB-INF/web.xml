@@ -29,4 +29,21 @@
    		<url-pattern>*.js</url-pattern>
    		<url-pattern>*.css</url-pattern>
  	</filter-mapping>
+ 	
+ 	<!-- Add response headers:
+ 		 http://onjava.com/pub/a/onjava/2004/03/03/filters.html?page=1
+ 	 -->
+ 	<filter>
+        <filter-name>responseHeaderFilter</filter-name>
+        <filter-class>com.googlecode.minifly.web.filters.ResponseHeaderFilter</filter-class>
+        <init-param> 
+        	<param-name>Cache-Control</param-name>
+        	<param-value>max-age=3600</param-value>
+        </init-param>
+ 	</filter>
+ 	<filter-mapping>
+   		<filter-name>responseHeaderFilter</filter-name>
+   		<url-pattern>*.js</url-pattern>
+   		<url-pattern>*.css</url-pattern>
+ 	</filter-mapping>
 </web-app>
