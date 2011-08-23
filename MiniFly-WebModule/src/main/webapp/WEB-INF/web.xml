@@ -16,6 +16,16 @@
   	</context-param>
   	
   	<filter>
+    	<filter-name>SimplePageCachingFilter</filter-name>
+    	<filter-class>net.sf.ehcache.constructs.web.filter.SimplePageCachingFilter</filter-class>
+  	</filter>
+
+  	<filter-mapping>
+    	<filter-name>SimplePageCachingFilter</filter-name>
+    	<url-pattern>/*</url-pattern>
+  	</filter-mapping>
+  	
+  	<filter>
         <filter-name>yuiMinFilter</filter-name>
         <filter-class>com.googlecode.minifly.web.filters.YUICompressorFilter</filter-class>
         <!-- All the init params are optional and are equivalent to YUICompressor command line options --> 
@@ -46,4 +56,6 @@
    		<url-pattern>*.js</url-pattern>
    		<url-pattern>*.css</url-pattern>
  	</filter-mapping>
+ 	
+ 	
 </web-app>
