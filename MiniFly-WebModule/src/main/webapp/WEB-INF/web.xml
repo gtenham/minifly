@@ -17,7 +17,18 @@
   	
   	<filter>
     	<filter-name>SimplePageCachingFilter</filter-name>
-    	<filter-class>net.sf.ehcache.constructs.web.filter.SimplePageCachingFilter</filter-class>
+    	<!-- Use the original SimplePageCachingFilter provided by ehcache:
+    	   	<filter-class>net.sf.ehcache.constructs.web.filter.SimplePageCachingFilter</filter-class>  
+    	-->
+    	<!-- The com.googlecode.minifly.web.filters.SimplePageCachingFilter is a copy off
+    		 net.sf.ehcache.constructs.web.filter.SimplePageCachingFilter, but with a new cache
+    		 override option.
+    		 
+    		 Use the following request parameter to override this cache filter and
+    		 obtain the rendered response:
+    		 ?cache-override=true
+    	 -->
+    	<filter-class>com.googlecode.minifly.web.filters.SimplePageCachingFilter</filter-class>
   	</filter>
 
   	<filter-mapping>
