@@ -41,13 +41,13 @@ used with JMX monitors.
     MiniFly servlet cache.
     -->
 	<diskStore path="java.io.tmpdir/minifly"/>
-    <cache name="SimplePageCachingFilter"
+    <cache name="MiniflyResourceCachingFilter"
            maxElementsInMemory="10000"
            maxElementsOnDisk="1000"
            eternal="false"
            overflowToDisk="true"
            timeToIdleSeconds="300"
-           timeToLiveSeconds="600"
+           timeToLiveSeconds="3600"
            memoryStoreEvictionPolicy="LFU"
             />
 </ehcache>

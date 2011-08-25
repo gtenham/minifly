@@ -17,7 +17,10 @@
   	
   	<filter>
     	<filter-name>SimplePageCachingFilter</filter-name>
-    	<!-- Use the original SimplePageCachingFilter provided by ehcache:
+    	<!-- The SimplePageCachingFilter is a simple caching filter suitable for caching compressible HTTP 
+    		 responses such as HTML, XML or JSON. It uses a Singleton CacheManager 
+    		 created with the default factory method.
+    	
     	   	<filter-class>net.sf.ehcache.constructs.web.filter.SimplePageCachingFilter</filter-class>  
     	-->
     	<!-- The com.googlecode.minifly.web.filters.SimplePageCachingFilter is a copy off
@@ -27,8 +30,32 @@
     		 Use the following request parameter to override this cache filter and
     		 obtain the rendered response:
     		 ?cache-override=true
-    	 -->
+    	
     	<filter-class>com.googlecode.minifly.web.filters.SimplePageCachingFilter</filter-class>
+    	-->
+    	<!-- The SimpleCachingHeadersPageCachingFilter extends SimplePageCachingFilter to provide 
+    		 the HTTP cache headers: ETag, Last-Modified and Expires. 
+    		 It supports conditional GET. Because browsers and other HTTP clients have 
+    		 the expiry information returned in the response headers, they do not even need to 
+    		 request the page again. Even once the local browser copy has expired, 
+    		 the browser will do a conditional GET.  
+    	
+    	<filter-class>net.sf.ehcache.constructs.web.filter.SimpleCachingHeadersPageCachingFilter</filter-class>
+    	-->
+    	<!-- The com.googlecode.minifly.web.filters.SimpleCachingHeadersPageCachingFilter is a copy off
+    		 net.sf.ehcache.constructs.web.filter.SimpleCachingHeadersPageCachingFilter, but with a new cache
+    		 override option.
+    		 
+    		 Use the following request parameter to override this cache filter and
+    		 obtain the rendered response:
+    		 ?cache-override=true
+    	-->
+    	<filter-class>com.googlecode.minifly.web.filters.SimpleCachingHeadersPageCachingFilter</filter-class>
+    	
+    	<init-param> 
+        	<param-name>cacheName</param-name>
+        	<param-value>MiniflyResourceCachingFilter</param-value>
+        </init-param>
   	</filter>
 
   	<filter-mapping>

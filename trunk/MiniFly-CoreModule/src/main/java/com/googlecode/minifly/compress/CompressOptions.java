@@ -19,7 +19,7 @@ package com.googlecode.minifly.compress;
  * @author gtenham
  *
  */
-public class YUIOptions {
+public class CompressOptions {
 	
 	private int lineBreakPos = -1;   //Insert a line break after the specified column number
     private boolean warn = false; //Display possible errors in the code
