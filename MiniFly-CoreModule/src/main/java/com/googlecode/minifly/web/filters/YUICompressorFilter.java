@@ -28,7 +28,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.googlecode.minifly.compress.YUIOptions;
+import com.googlecode.minifly.compress.CompressOptions;
 import com.googlecode.minifly.services.IResourceService;
 import com.googlecode.minifly.services.impl.ResourceService;
 import com.googlecode.minifly.web.filters.wrappers.CompressorResponseWrapper;
@@ -40,13 +40,13 @@ public class YUICompressorFilter implements Filter {
 	private static final Logger log = LoggerFactory.getLogger(YUICompressorFilter.class);
 	
 	// YUI parameters
-	private YUIOptions options;
+	private CompressOptions options;
 	
 	IResourceService rs;
 	
 	public void init(FilterConfig filterConfig) throws ServletException {
 		
-    	options = new YUIOptions();
+    	options = new CompressOptions();
     	rs = new ResourceService();
     	
         String lineBreak = filterConfig.getInitParameter("line-break");
@@ -81,23 +81,33 @@ public class YUICompressorFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		
+		String requestURI = request.getRequestURI();
+		String cacheOverride = request.getParameter("cache-override");
 		
-        ServletOutputStream servletOutputStream = response.getOutputStream();
+		ServletOutputStream servletOutputStream = response.getOutputStream();
         
-        CompressorResponseWrapper wrapperResponse = new CompressorResponseWrapper(response);
-		filterChain.doFilter(request, wrapperResponse);
-
-        String requestURI = request.getRequestURI();
+        if (cacheOverride != null && cacheOverride.equalsIgnoreCase("debug")) {
+        	filterChain.doFilter(servletRequest, response);
+        } else {
+        	CompressorResponseWrapper wrapperResponse = new CompressorResponseWrapper(response);
+        	filterChain.doFilter(request, wrapperResponse);
         
-        ByteArrayInputStream bais = new ByteArrayInputStream(wrapperResponse.getResponseData());
-        writeFileToServletOutputStream(requestURI, bais, servletOutputStream);
-		
+        	ByteArrayInputStream bais = new ByteArrayInputStream(wrapperResponse.getResponseData());
+        	writeFileToServletOutputStream(requestURI, bais, servletOutputStream);
+        }
 	}
 
 	public void destroy() {		
 	}
 	
+	/**
+	 * @param requestURI
+	 * @param inputStream
+	 * @param servletOutputStream
+	 * @throws IOException
+	 */
 	private void writeFileToServletOutputStream(String requestURI, InputStream inputStream, ServletOutputStream servletOutputStream) throws IOException {
+		
 		String s;
 	    if (requestURI.endsWith(".js")) {
             s = rs.getCompressedJavaScript(inputStream, options);
@@ -106,19 +116,8 @@ public class YUICompressorFilter implements Filter {
         } else {
             s = "This file format is not supported by this filter. Only .css and .js are supported";
         }
-        write(s, servletOutputStream);
+        rs.write(s, servletOutputStream);
+		
     }
-	/**
-     * Write s to servletOutputStream
-     *
-     * @param s
-     * @param servletOutputStream
-     */
-    private void write(String s, ServletOutputStream servletOutputStream) {
-        try {
-            servletOutputStream.print(s);
-        } catch (IOException e) {
-            log.error("error writing String to servletOutputStream: " + e.getMessage());
-        }
-    }
+	
 }

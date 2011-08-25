@@ -20,12 +20,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.StringWriter;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
-import com.googlecode.minifly.compress.YUIOptions;
+import com.googlecode.minifly.compress.CompressOptions;
 import com.googlecode.minifly.services.IResourceService;
 import com.googlecode.minifly.web.filters.YUICompressorErrorReporter;
 import com.yahoo.platform.yui.compressor.CssCompressor;
@@ -62,14 +63,15 @@ public class ResourceService implements IResourceService {
 			throw new IOException();
 		}
 		
-		int bytes;
-		while ((bytes = resourceInputStream.read()) != -1) {
-			os.write(bytes);
-		}
+		write(resourceInputStream, os);
+//		int bytes;
+//		while ((bytes = resourceInputStream.read()) != -1) {
+//			os.write(bytes);
+//		}
 	}
 
 	public String getCompressedJavaScript(InputStream inputStream,
-			YUIOptions options) throws IOException {
+			CompressOptions options) throws IOException {
 		InputStreamReader isr = new InputStreamReader(inputStream);
         JavaScriptCompressor compressor = new JavaScriptCompressor(isr, new YUICompressorErrorReporter());
         inputStream.close();
@@ -82,7 +84,7 @@ public class ResourceService implements IResourceService {
         return buffer.toString();
 	}
 
-	public String getCompressedCss(InputStream inputStream, YUIOptions options)
+	public String getCompressedCss(InputStream inputStream, CompressOptions options)
 			throws IOException {
 		InputStreamReader isr = new InputStreamReader(inputStream);
         CssCompressor compressor = new CssCompressor(isr);
@@ -94,6 +96,27 @@ public class ResourceService implements IResourceService {
 
         StringBuffer buffer = out.getBuffer();
         return buffer.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.googlecode.minifly.services.IResourceService#write(java.io.InputStream, java.io.OutputStream)
+	 */
+	public void write(InputStream inputstream, OutputStream outputstream) throws IOException {
+
+		int bytes;
+		while ((bytes = inputstream.read()) != -1) {
+			outputstream.write(bytes);
+		}
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.googlecode.minifly.services.IResourceService#write(java.lang.String, javax.servlet.ServletOutputStream)
+	 */
+	public void write(String input, ServletOutputStream outputstream) throws IOException {
+
+		outputstream.print(input);
+		
 	}
 
 }
