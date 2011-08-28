@@ -31,7 +31,7 @@
     		 obtain the rendered response:
     		 ?cache-override=true
     	
-    	<filter-class>com.googlecode.minifly.web.filters.SimplePageCachingFilter</filter-class>
+    	<filter-class>com.googlecode.minifly.web.filters.SimplePageCachingExtFilter</filter-class>
     	-->
     	<!-- The SimpleCachingHeadersPageCachingFilter extends SimplePageCachingFilter to provide 
     		 the HTTP cache headers: ETag, Last-Modified and Expires. 
