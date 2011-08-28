@@ -39,9 +39,9 @@
     		 the expiry information returned in the response headers, they do not even need to 
     		 request the page again. Even once the local browser copy has expired, 
     		 the browser will do a conditional GET.  
-    	
-    	<filter-class>net.sf.ehcache.constructs.web.filter.SimpleCachingHeadersPageCachingFilter</filter-class>
     	-->
+    	<filter-class>net.sf.ehcache.constructs.web.filter.SimpleCachingHeadersPageCachingFilter</filter-class>
+    	
     	<!-- The com.googlecode.minifly.web.filters.SimpleCachingHeadersPageCachingExtFilter extends
     		 net.sf.ehcache.constructs.web.filter.SimpleCachingHeadersPageCachingFilter, but with a new cache
     		 override option.
@@ -49,9 +49,9 @@
     		 Use the following request parameter to override this cache filter and
     		 obtain the rendered response:
     		 ?cache-override=true
-    	-->
-    	<filter-class>com.googlecode.minifly.web.filters.SimpleCachingHeadersPageCachingExtFilter</filter-class>
     	
+    	<filter-class>com.googlecode.minifly.web.filters.SimpleCachingHeadersPageCachingExtFilter</filter-class>
+    	-->
     	<init-param> 
         	<param-name>cacheName</param-name>
         	<param-value>MiniflyResourceCachingFilter</param-value>
