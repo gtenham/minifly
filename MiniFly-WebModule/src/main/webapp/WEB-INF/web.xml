@@ -23,7 +23,7 @@
     	
     	   	<filter-class>net.sf.ehcache.constructs.web.filter.SimplePageCachingFilter</filter-class>  
     	-->
-    	<!-- The com.googlecode.minifly.web.filters.SimplePageCachingFilter is a copy off
+    	<!-- The com.googlecode.minifly.web.filters.SimplePageCachingExtFilter extends
     		 net.sf.ehcache.constructs.web.filter.SimplePageCachingFilter, but with a new cache
     		 override option.
     		 
@@ -42,7 +42,7 @@
     	
     	<filter-class>net.sf.ehcache.constructs.web.filter.SimpleCachingHeadersPageCachingFilter</filter-class>
     	-->
-    	<!-- The com.googlecode.minifly.web.filters.SimpleCachingHeadersPageCachingFilter is a copy off
+    	<!-- The com.googlecode.minifly.web.filters.SimpleCachingHeadersPageCachingExtFilter extends
     		 net.sf.ehcache.constructs.web.filter.SimpleCachingHeadersPageCachingFilter, but with a new cache
     		 override option.
     		 
@@ -50,7 +50,7 @@
     		 obtain the rendered response:
     		 ?cache-override=true
     	-->
-    	<filter-class>com.googlecode.minifly.web.filters.SimpleCachingHeadersPageCachingFilter</filter-class>
+    	<filter-class>com.googlecode.minifly.web.filters.SimpleCachingHeadersPageCachingExtFilter</filter-class>
     	
     	<init-param> 
         	<param-name>cacheName</param-name>
@@ -80,7 +80,7 @@
  	
  	<!-- Add response headers:
  		 http://onjava.com/pub/a/onjava/2004/03/03/filters.html?page=1
- 	 -->
+ 	 
  	<filter>
         <filter-name>responseHeaderFilter</filter-name>
         <filter-class>com.googlecode.minifly.web.filters.ResponseHeaderFilter</filter-class>
@@ -94,6 +94,6 @@
    		<url-pattern>*.js</url-pattern>
    		<url-pattern>*.css</url-pattern>
  	</filter-mapping>
- 	
+ 	-->
  	
 </web-app>
