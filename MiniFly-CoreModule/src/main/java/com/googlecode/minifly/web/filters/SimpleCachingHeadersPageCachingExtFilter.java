@@ -22,8 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.ehcache.Element;
-import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import net.sf.ehcache.constructs.web.PageInfo;
 import net.sf.ehcache.constructs.web.filter.SimpleCachingHeadersPageCachingFilter;
 
@@ -42,7 +40,7 @@ import net.sf.ehcache.constructs.web.filter.SimpleCachingHeadersPageCachingFilte
 public class SimpleCachingHeadersPageCachingExtFilter extends
 		SimpleCachingHeadersPageCachingFilter {
 	
-private static final Logger logger = LoggerFactory.getLogger(SimpleCachingHeadersPageCachingExtFilter.class);
+	private static final Logger logger = LoggerFactory.getLogger(SimpleCachingHeadersPageCachingExtFilter.class);
 	
 	/**
      * Build page info either using the cache or building the page directly.
@@ -53,46 +51,22 @@ private static final Logger logger = LoggerFactory.getLogger(SimpleCachingHeader
     protected PageInfo buildPageInfo(final HttpServletRequest request, final HttpServletResponse response,
                                      final FilterChain chain) throws Exception {
         final String cacheOverride = request.getParameter("cache-override");
-    	// Look up the cached page
-        final String key = calculateKey(request);
-        PageInfo pageInfo = null;
-        String originalThreadName = Thread.currentThread().getName();
-        try {
-            checkNoReentry(request);
-            Element element = blockingCache.get(key);
-            if (element == null || element.getObjectValue() == null) {
-                try {
-                    // Page is not cached - build the response, cache it, and send to client
-                    pageInfo = buildPage(request, response, chain);
-                    if (pageInfo.isOk()) {
-                        if (logger.isDebugEnabled()) {
-                        	logger.debug("PageInfo ok. Adding to cache " + blockingCache.getName() + " with key " + key);
-                        }
-                        blockingCache.put(new Element(key, pageInfo));
-                    } else {
-                        if (logger.isDebugEnabled()) {
-                        	logger.debug("PageInfo was not ok(200). Putting null into cache " + blockingCache.getName()
-                                    + " with key " + key);
-                        }
-                        blockingCache.put(new Element(key, null));
-                    }
-                } catch (final Throwable throwable) {
-                    // Must unlock the cache if the above fails. Will be logged at Filter
-                    blockingCache.put(new Element(key, null));
-                    throw new Exception(throwable);
-                }
-            } else if (cacheOverride != null) {
-            	// Override cache. Build page from response
-            	pageInfo = buildPage(request, response, chain);
-            } else {
-                pageInfo = (PageInfo) element.getObjectValue();
+        PageInfo pageInfoExt = null;
+        
+        if (cacheOverride != null) {
+        	if (logger.isDebugEnabled()) {
+            	logger.debug("Cache override detected, return original rendered response ");
             }
-        } catch (LockTimeoutException e) {
-            //do not release the lock, because you never acquired it
-            throw e;
-        } finally {
-            Thread.currentThread().setName(originalThreadName);
+        	pageInfoExt = buildPage(request, response, chain);
+        	
+        } else {
+        	if (logger.isDebugEnabled()) {
+            	logger.debug("No Cache override detected.");
+            }
+        	pageInfoExt = super.buildPageInfo(request, response, chain);
         }
-        return pageInfo;
+        
+        return pageInfoExt;
+        
     }
 }
